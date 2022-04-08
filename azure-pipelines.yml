@@ -26,9 +26,18 @@ stages:
     - task: VSBuild@1
       inputs:
         solution: '**/*.sln'
-        msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(build.artifactStagingDirectory)"'
+        msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(Build.BinariesDirectory)"'
         platform: 'Any CPU'
         configuration: 'release'
+    - task: ArchiveFiles@2
+      inputs:
+        rootFolderOrFile: '$(Build.BinariesDirectory)'
+        includeRootFolder: true
+        archiveType: 'zip'
+        archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
+        replaceExistingArchive: true
+    - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
+      artifact: drop
 
 - stage: Deploy
   displayName: Deploy stage
@@ -53,4 +62,4 @@ stages:
                 azureSubscription: 'Visual Studio Professional Subscription(c34b492b-56d1-4226-95d1-426b7e63f2c7)'
                 appType: 'webApp'
                 WebAppName: 'WebApplication120220408021058'
-                packageForLinux: '$(Pipeline.Workspace)'
+                packageForLinux: '$(Pipeline.Workspace)/drop/$(Build.BuildId).zip'
