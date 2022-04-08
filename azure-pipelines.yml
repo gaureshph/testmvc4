@@ -26,14 +26,20 @@ stages:
     - task: VSBuild@1
       inputs:
         solution: '**/*.sln'
-        msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(Build.artifactStagingDirectory)"'
+        msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(Build.ArtifactStagingDirectory)"'
         platform: 'Any CPU'
         configuration: 'release'
-    - task: PublishBuildArtifacts@1
-      displayName: 'Publish artifacts'
+    - task: ArchiveFiles@2
+      displayName: 'Archive files'
       inputs:
-        PathtoPublish: $(build.artifactstagingdirectory)
-        ArtifactName: 'PublishBuildArtifacts'
+        rootFolderOrFile: '$(Build.ArtifactStagingDirectory)/_PublishedWebsites/WebApplication1'
+        includeRootFolder: false
+        archiveType: zip
+        archiveFile: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
+        replaceExistingArchive: true
+
+    - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
+      artifact: drop
 
 - stage: Deploy
   displayName: Deploy stage
