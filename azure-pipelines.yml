@@ -23,6 +23,22 @@ stages:
       inputs:
         restoreSolution: '**/*.sln'
 
+    - task: replacetokens@5
+      inputs:
+        targetFiles: '**/*.config'
+        encoding: 'auto'
+        tokenPattern: 'custom'
+        tokenPrefix: '${'
+        tokenSuffix: '}'
+        writeBOM: true
+        actionOnMissing: 'warn'
+        keepToken: false
+        actionOnNoFiles: 'continue'
+        enableTransforms: false
+        enableRecursion: false
+        useLegacyPattern: false
+        enableTelemetry: false
+
     - task: VSBuild@1
       inputs:
         solution: '**/*.sln'
