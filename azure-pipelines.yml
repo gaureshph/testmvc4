@@ -40,7 +40,7 @@ stages:
 
     - task: FileTransform@1
       inputs:
-        folderPath: '$(Build.ArtifactStagingDirectory)/**/*.zip'
+        folderPath: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
         fileType: 'xml'
         targetFiles: '**/*.config'
         
