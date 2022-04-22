@@ -23,12 +23,6 @@ stages:
       inputs:
         restoreSolution: '**/*.sln'
 
-    - task: FileTransform@1
-      inputs:
-        folderPath: '$(System.DefaultWorkingDirectory)/**/*.zip'
-        fileType: 'xml'
-        targetFiles: '**/*.config'
-
     - task: VSBuild@1
       inputs:
         solution: '**/*.sln'
@@ -44,6 +38,12 @@ stages:
         archiveFile: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
         replaceExistingArchive: true
 
+    - task: FileTransform@1
+      inputs:
+        folderPath: '$(System.DefaultWorkingDirectory)/**/*.zip'
+        fileType: 'xml'
+        targetFiles: '**/*.config'
+        
     - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
       artifact: drop
 
